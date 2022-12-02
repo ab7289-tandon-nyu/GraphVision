@@ -1,0 +1,21 @@
+torch
+torchvision
+torchaudio
+scikit-learn
+scipy
+matplotlib
+pandas
+jupyter
+matplotlib
+wandb
+torch-summary
+
+# PyG Dependencies
+torch-geometric
+
+# test-dependencies
+pytest
+pytest-cov
+black
+isort
+tox
