@@ -5,7 +5,7 @@ def get_transforms_list(type: str = "cartesian"):
     if type is "default":
         return [
             T.NormalizeScale(),
-            T.Cartesian(cat=True),
+            T.Cartesian(cat=False),
         ]
     elif type is "distance":
         return [
@@ -16,6 +16,12 @@ def get_transforms_list(type: str = "cartesian"):
         return [
             T.NormalizeScale(),
             T.LocalCartesian(cat=False),
+        ]
+    elif type is "slic":
+        return [
+            T.NormalizeScale(),
+            T.Cartesian(cat = False),
+            T.ToSLIC(),
         ]
 
 
