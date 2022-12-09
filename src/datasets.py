@@ -4,7 +4,8 @@ from typing import Tuple, Union
 import torch_geometric.datasets as datasets
 import torch_geometric.transforms as T
 from torch.utils.data import random_split
-from torch_geometric.data import DataLoader, Dataset
+from torch_geometric.data import Dataset
+from torch_geometric.loader import DataLoader
 from torch_geometric.transforms import base_transform
 
 _DATASET_NAMES = dict(
