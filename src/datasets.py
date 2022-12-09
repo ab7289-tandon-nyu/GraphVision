@@ -1,10 +1,10 @@
 import copy
-from typing import Tuple
+from typing import Tuple, Union
 
 import torch_geometric.datasets as datasets
 import torch_geometric.transforms as T
 from torch.utils.data import random_split
-from torch_geometric.data import Dataset
+from torch_geometric.data import DataLoader, Dataset
 from torch_geometric.transforms import base_transform
 
 _DATASET_NAMES = dict(
@@ -66,3 +66,50 @@ def get_dataset(
         return train_dataset, valid_dataset, test_dataset
     else:
         raise ValueError("Invalid Dataset name")
+
+
+def get_dataloaders(
+    train_dataset: Dataset,
+    valid_dataset: Dataset,
+    test_dataset: Dataset,
+    batch_size: Union[int, Tuple[int, int]] = 1,
+    drop_last: bool = False,
+) -> Tuple[DataLoader, DataLoader, DataLoader]:
+    """
+    Given valid, train, and test datasets; returns dataloadersr with the specified batch size
+    """
+    train_batch, valid_batch, test_batch = None, None, None
+    if isinstance(batch_size, Tuple):
+        if len(batch_size) == 1:
+            train_batch, valid_batch, test_batch = (
+                batch_size[0],
+                batch_size[0],
+                batch_size[0],
+            )
+        elif len(batch_size) == 2:
+            train_batch, valid_batch, test_batch = (
+                batch_size[0],
+                batch_size[0],
+                batch_size[1],
+            )
+        elif len(batch_size) == 3:
+            train_batch, valid_batch, test_batch = (
+                batch_size[0],
+                batch_size[1],
+                batch_size[2],
+            )
+        else:
+            raise ValueError("Invalid number of indices for batch_size")
+    else:
+        train_batch, valid_batch, test_batch = batch_size, batch_size, batch_size
+    return (
+        DataLoader(
+            train_dataset, batch_size=train_batch, shuffle=True, drop_last=drop_last
+        ),
+        DataLoader(
+            valid_dataset, batch_size=valid_batch, shuffle=True, drop_last=drop_last
+        ),
+        DataLoader(
+            test_dataset, batch_size=test_batch, shuffle=True, drop_last=drop_last
+        ),
+    )
