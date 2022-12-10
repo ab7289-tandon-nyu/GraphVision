@@ -34,7 +34,7 @@ def get_dataset(
             data_dir, train=False, pre_transform=pre_transforms, transform=transforms
         )
 
-        train_len = int(len(train_dataset) * valid_ratio)
+        train_len = int(len(train_dataset) * (1-valid_ratio))
         valid_len = int(len(train_dataset) - train_len)
         train_dataset, valid_dataset = random_split(
             train_dataset, [train_len, valid_len]
