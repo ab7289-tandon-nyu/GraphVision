@@ -26,22 +26,21 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
-        echo $LD_LIBRARY_PATH
-        export DYLD_LIBRARY_PATH=/usr/local/cuda/lib:$DYLD_LIBRARY_PATH
-        echo $DYLD_LIBRARY_PATH
-
         python -m pip install --upgrade pip
         python -m pip install pytest tox torch
         pytorch_version=$(python -c "import torch; print(torch.__version__)")
         python -m pip install pyg-lib torch-scatter torch-cluster torch-sparse -f "https://data.pyg.org/whl/torch-$pytorch_version.html"
         python -m pip install torch-geometric
         
-        
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run Tox
       run: |
         tox -e py
     - name: Run pytest
       run: |
+        export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+        echo $LD_LIBRARY_PATH
+        export DYLD_LIBRARY_PATH=/usr/local/cuda/lib:$DYLD_LIBRARY_PATH
+        echo $DYLD_LIBRARY_PATH
         pytest --cov
       
