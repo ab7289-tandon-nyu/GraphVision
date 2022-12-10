@@ -27,7 +27,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install pytest tox
+        python -m pip install pytest tox torch
         pytorch_version=$(python -c "import torch; print(torch.__version__)")
         python -m pip install pyg-lib torch-scatter torch-cluster torch-sparse -f "https://data.pyg.org/whl/torch-$pytorch_version.html"
         python -m pip install torch-geometric
