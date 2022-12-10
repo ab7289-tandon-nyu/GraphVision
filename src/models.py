@@ -6,7 +6,7 @@ import torch_geometric.nn as gnn
 from torch import nn
 from torch_geometric.data import Data
 
-from utils import normalized_cut_2d
+from src.utils import normalized_cut_2d
 
 
 def get_conv_layer(
@@ -85,10 +85,13 @@ class DeeperGCN(nn.Module):
 
         self.readout = readout
         self.use_cluster_pooling = use_cluster_pooling
+        self.dropout = dropout
 
-        self.linears = nn.ModuleList()
-        self.linears.append(nn.Linear(input_features, hidden_features))
-        self.linears.append(nn.Linear(hidden_features, output_features))
+        # self.linears = nn.ModuleList()
+        # self.linears.append(nn.Linear(input_features, hidden_features))
+        # self.linears.append(nn.Linear(hidden_features, output_features))
+        self.fc_in = nn.Linear(input_features, hidden_features)
+        self.fc_out = nn.Linear(hidden_features, output_features)
         self.out_act = get_act_layer(act)
 
         self.layers = nn.ModuleList()
@@ -104,9 +107,11 @@ class DeeperGCN(nn.Module):
             )
 
     def forward(self, data: Data) -> torch.Tensor:
-        data.x = self.linears[0](data.x)
+        # print(f"data: {data}")
+        # data.x = self.linears[0](data.x)
+        data.x = self.fc_in(data.x)
 
-        for layer in range(self.layers):
+        for layer in self.layers:
             data.x = layer(data.x, data.edge_index, data.edge_attr)
 
         x, batch = data.x, data.batch
@@ -126,4 +131,5 @@ class DeeperGCN(nn.Module):
         F.dropout(x, p=self.dropout, training=self.training)
         x = self.out_act(x)
 
-        return self.linears[0](x)
+        # return self.linears[0](x)
+        return self.fc_out(x)
