@@ -6,7 +6,7 @@ from torch_geometric.data import Dataset
 from torch_geometric.datasets import MNISTSuperpixels
 from torch_geometric.loader import DataLoader
 
-from src.datasets import get_dataloaders, get_dataset
+from src.datasets import get_dataloaders, get_datasets
 
 
 @pytest.mark.parametrize(
@@ -26,10 +26,10 @@ def test_dataset_download(name, return_value, tmp_path):
     path = tmp_path
     if isinstance(return_value, str):
         with pytest.raises(ValueError):
-            _, _, _ = get_dataset(path, name)
+            _, _, _ = get_datasets(path, name)
 
     else:
-        dataset = get_dataset(path, name)
+        dataset = get_datasets(path, name)
         assert isinstance(dataset, tuple)
         assert isinstance(dataset[0], return_value[0])
         assert isinstance(dataset[1], return_value[1])
