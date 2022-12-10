@@ -34,3 +34,7 @@ jobs:
     - name: Run Tox
       run: |
         tox -e py
+    - name: Run pytest
+      run: |
+        pytest --cov
+      
