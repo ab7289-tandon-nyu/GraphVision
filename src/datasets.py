@@ -15,7 +15,7 @@ _DATASET_NAMES = dict(
 )
 
 
-def get_dataset(
+def get_datasets(
     data_dir: str = "../data/",
     name: str = "MNISTSuperpixels",
     pre_transforms: base_transform = None,
