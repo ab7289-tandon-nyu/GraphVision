@@ -1,5 +1,6 @@
 import pytest
 import torch
+from torch_geometric.data import Data
 from torch_geometric.datasets import MNISTSuperpixels
 
 
@@ -18,3 +19,15 @@ def test_datasets(tmp_path):
         train_dataset, [train_ratio, valid_ratio]
     )
     return train_dataset, valid_dataset, test_dataset
+
+
+@pytest.fixture
+def test_graph_input():
+    data = Data(
+        x=torch.ones((10, 1)),
+        edge_index=torch.ones((2, 15), dtype=torch.long),
+        edge_attt=torch.ones((15, 2)),
+        batch=torch.tensor([0]),
+        y=torch.tensor([1]),
+    )
+    return data
