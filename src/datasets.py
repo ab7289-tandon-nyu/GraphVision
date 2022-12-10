@@ -34,7 +34,7 @@ def get_dataset(
             data_dir, train=False, pre_transform=pre_transforms, transform=transforms
         )
 
-        train_len = int(len(train_dataset) * (1-valid_ratio))
+        train_len = int(len(train_dataset) * (1 - valid_ratio))
         valid_len = int(len(train_dataset) - train_len)
         train_dataset, valid_dataset = random_split(
             train_dataset, [train_len, valid_len]
@@ -104,13 +104,16 @@ def get_dataloaders(
     else:
         train_batch, valid_batch, test_batch = batch_size, batch_size, batch_size
     return (
+        # Train
         DataLoader(
             train_dataset, batch_size=train_batch, shuffle=True, drop_last=drop_last
         ),
+        # Valid
         DataLoader(
-            valid_dataset, batch_size=valid_batch, shuffle=True, drop_last=drop_last
+            valid_dataset, batch_size=valid_batch, shuffle=False, drop_last=drop_last
         ),
+        # Test
         DataLoader(
-            test_dataset, batch_size=test_batch, shuffle=True, drop_last=drop_last
+            test_dataset, batch_size=test_batch, shuffle=False, drop_last=drop_last
         ),
     )
