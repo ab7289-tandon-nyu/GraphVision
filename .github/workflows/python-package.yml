@@ -26,15 +26,23 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        $CONDA/bin/conda install pytorch torchvision pytorch-cuda=11.6 -c pytorch -c nvidia -y
+        python -m pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu
         
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Install dependencies pt 2
+    - name: Install pytorch geometric from source
       run: |
-        $CONDA/bin/conda install pyg -c pyg -y
-        python -m pip install pyg-lib torch-scatter torch-sparse -f https://data.pyg.org/whl/torch-1.13.0+cu116.html
-        python -m pip install torch-geometric
-    - name: Link
+        TORCH=$(python -c "import torch; print(torch.__version__)")
+        export PATH=/usr/local/cuda/bin:$PATH
+        echo $PATH
+        export CPATH=/usr/local/cuda/include:$CPATH
+        echo $CPATH
+        export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+        echo $LD_LIBRARY_PATH
+        python -m pip install pyg-lib
+        python -m pip install torch-scatter
+        python -m pip install torch-sparse
+        python -m pip install torch-geometric 
+    - name: Linter
       run: |
         black --check --diff src tests
         isort --check-only --profile black src tests
