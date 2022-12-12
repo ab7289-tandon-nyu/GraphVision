@@ -31,7 +31,6 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Install dependencies pt 2
       run: |
-        TODO conda create instance to use
         $CONDA/bin/conda create -n pyg -y
         $CONDA/bin/conda activate pyg
         $CONDA/bin/conda install pyg -c pyg -y
