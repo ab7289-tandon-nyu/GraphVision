@@ -2,7 +2,7 @@ import torch_geometric.transforms as T
 
 
 def get_transforms_list(type: str = "cartesian"):
-    if type is "default":
+    if type is "cartesian":
         return [
             T.GCNNorm(),
             T.Cartesian(cat=False),
