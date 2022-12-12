@@ -32,16 +32,18 @@ jobs:
     - name: Install pytorch geometric from source
       run: |
         TORCH=$(python -c "import torch; print(torch.__version__)")
+        ECHO $TORCH
+        python -V
         export PATH=/usr/local/cuda/bin:$PATH
         echo $PATH
         export CPATH=/usr/local/cuda/include:$CPATH
         echo $CPATH
         export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
         echo $LD_LIBRARY_PATH
-        python -m pip install pyg-lib
-        python -m pip install torch-scatter
-        python -m pip install torch-sparse
-        python -m pip install torch-geometric 
+        python -m pip install pyg-lib -f https://data.pyg.org/whl/torch-${TORCH}-cpu.html
+        python -m pip install torch-scatter -f https://data.pyg.org/whl/torch-${TORCH}-cpu.html
+        python -m pip install torch-sparse -f https://data.pyg.org/whl/torch-${TORCH}-cpu.html
+        python -m pip install torch-geometric
     - name: Linter
       run: |
         black --check --diff src tests
