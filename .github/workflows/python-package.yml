@@ -32,7 +32,7 @@ jobs:
     - name: Install pytorch geometric from source
       run: |
         TORCH=$(python -c "import torch; print(torch.__version__)")
-        ECHO $TORCH
+        echo $TORCH
         python -V
         export PATH=/usr/local/cuda/bin:$PATH
         echo $PATH
