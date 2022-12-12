@@ -1,6 +1,6 @@
 from typing import Any, Optional, Tuple
 
-from utils import calculate_accuracy
+from src.utils import calculate_accuracy
 
 
 def train(
