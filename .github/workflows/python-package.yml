@@ -40,9 +40,9 @@ jobs:
         echo $CPATH
         export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
         echo $LD_LIBRARY_PATH
-        python -m pip install pyg-lib -f https://data.pyg.org/whl/torch-${TORCH}-cpu.html
-        python -m pip install torch-scatter -f https://data.pyg.org/whl/torch-${TORCH}-cpu.html
-        python -m pip install torch-sparse -f https://data.pyg.org/whl/torch-${TORCH}-cpu.html
+        python -m pip install pyg-lib -f https://data.pyg.org/whl/torch-${TORCH}.html
+        python -m pip install torch-scatter -f https://data.pyg.org/whl/torch-${TORCH}.html
+        python -m pip install torch-sparse -f https://data.pyg.org/whl/torch-${TORCH}.html
         python -m pip install torch-geometric
     - name: Linter
       run: |
