@@ -34,9 +34,10 @@ jobs:
         $CONDA/bin/conda install pyg -c pyg -y
         python -m pip install pyg-lib torch-scatter torch-sparse -f https://data.pyg.org/whl/torch-1.13.0+cu116.html
         python -m pip install torch-geometric
-    - name: Run Tox
+    - name: Link
       run: |
-        tox -e py
+        black --check --diff src tests
+        isort --check-only --profile black src tests
     - name: Run pytest
       run: |
         pytest --cov
