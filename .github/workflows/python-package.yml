@@ -28,7 +28,9 @@ jobs:
       run: |
         $CONDA/bin/conda install pytorch torchvision pytorch-cuda=11.6 -c pytorch -c nvidia -y
         $CONDA/bin/conda install pyg -c pyg -y
-        
+        TORCH=$(python -c "import torch; print(torch.__version__)")
+        python -m pip install pyg-lib torch-scatter torch-sparse -f https://data.pyg.org/whl/torch-${TORCH}+cpu.html
+        python -m pip install torch-geometric
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run Tox
       run: |
