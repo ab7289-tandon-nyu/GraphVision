@@ -31,8 +31,11 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Install dependencies pt 2
       run: |
+        TODO conda create instance to use
+        $CONDA/bin/conda create -n pyg -y
+        $CONDA/bin/conda activate pyg
         $CONDA/bin/conda install pyg -c pyg -y
-        python -m pip install pyg-lib torch-scatter torch-sparse -f https://data.pyg.org/whl/torch-1.13.0+11.6.html
+        python -m pip install pyg-lib torch-scatter torch-sparse -f https://data.pyg.org/whl/torch-1.13.0+cu116.html
         python -m pip install torch-geometric
     - name: Run Tox
       run: |
