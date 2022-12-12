@@ -26,6 +26,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
+        $CONDA/bin/conda init
         $CONDA/bin/conda activate base
         $CONDA/bin/conda install pytorch torchvision pytorch-cuda=11.6 -c pytorch -c nvidia -y
         
