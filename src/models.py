@@ -87,9 +87,6 @@ class DeeperGCN(nn.Module):
         self.use_cluster_pooling = use_cluster_pooling
         self.dropout = dropout
 
-        # self.linears = nn.ModuleList()
-        # self.linears.append(nn.Linear(input_features, hidden_features))
-        # self.linears.append(nn.Linear(hidden_features, output_features))
         self.fc_in = nn.Linear(input_features, hidden_features)
         self.fc_out = nn.Linear(hidden_features, output_features)
         self.out_act = get_act_layer(act)
@@ -107,8 +104,6 @@ class DeeperGCN(nn.Module):
             )
 
     def forward(self, data: Data) -> torch.Tensor:
-        # print(f"data: {data}")
-        # data.x = self.linears[0](data.x)
         data.x = self.fc_in(data.x)
 
         for layer in self.layers:
@@ -128,8 +123,7 @@ class DeeperGCN(nn.Module):
         elif self.readout == "add":
             x = gnn.global_add_pool(x, batch)
 
-        F.dropout(x, p=self.dropout, training=self.training)
+        x = F.dropout(x, p=self.dropout, training=self.training)
         x = self.out_act(x)
 
-        # return self.linears[0](x)
         return self.fc_out(x)
