@@ -50,7 +50,6 @@ jobs:
         isort --check-only --profile black src tests
     - name: Run pytest
       run: |
-        $CONDA/bin/conda activate base
         export PATH=/usr/local/cuda/bin:$PATH
         echo $PATH
         export CPATH=/usr/local/cuda/include:$CPATH
