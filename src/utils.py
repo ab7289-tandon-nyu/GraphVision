@@ -40,4 +40,4 @@ def calculate_accuracy(outputs: torch.Tensor, targets: torch.Tensor) -> float:
     and the targets
     """
     pred = outputs.argmax(-1)
-    return pred.view_as(targets).eq(targets).sum().item()
+    return pred.view_as(targets).eq(targets).sum().item() / targets.numel()
