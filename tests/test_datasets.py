@@ -1,4 +1,4 @@
-from typing import Tuple, Union
+from typing import List, Tuple, Union
 
 import pytest
 from torch.utils.data import Subset
@@ -8,6 +8,7 @@ from torch_geometric.loader import DataLoader
 from torchvision.datasets import CIFAR10, MNIST
 
 from src.datasets import get_dataloaders, get_datasets
+from src.transforms import get_transforms_list
 
 
 @pytest.mark.parametrize(
@@ -95,3 +96,19 @@ def test_create_dataloaders_batch(test_datasets):
                 for idx, loader in enumerate(loaders):
                     assert isinstance(loader, DataLoader)
                     assert loader.batch_size == batch_size[idx]
+
+
+@pytest.mark.parametrize(
+    "type,result_type",
+    [
+        ("cartesian", list),
+        ("distance", list),
+        ("localcartesian", list),
+        ("mnist-slic", list),
+        ("cifar10-slic", tuple),
+    ],
+)
+def test_get_transform_list(type, result_type):
+
+    result = get_transforms_list(type)
+    assert isinstance(result, result_type)
