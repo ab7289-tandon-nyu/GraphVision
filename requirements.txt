@@ -1,17 +1,11 @@
-torch
-torchvision
-torchaudio
+torch==1.13.0
 scikit-learn
 scipy
 matplotlib
-pandas
 jupyter
 matplotlib
 wandb
 torch-summary
-
-# PyG Dependencies
-torch-geometric
 
 # test-dependencies
 pytest

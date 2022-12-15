@@ -1,9 +1,11 @@
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 
-from utils import calculate_accuracy
+from src.utils import calculate_accuracy
 
 
-def train(model, iter, criterion, optimizer, device, scheduler: Optional[Any] = None):
+def train(
+    model, iter, criterion, optimizer, device, scheduler: Optional[Any] = None
+) -> Tuple[float, float]:
     model.train()
 
     epoch_loss = 0
@@ -26,7 +28,7 @@ def train(model, iter, criterion, optimizer, device, scheduler: Optional[Any] = 
     return epoch_loss / len(iter), epoch_acc / len(iter)
 
 
-def evaluate(model, iter, criterion, device):
+def evaluate(model, iter, criterion, device) -> Tuple[float, float]:
     model.eval()
 
     epoch_loss = 0

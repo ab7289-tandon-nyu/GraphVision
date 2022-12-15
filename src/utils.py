@@ -24,7 +24,7 @@ def count_parameters(model: nn.Module) -> Tuple[int, int]:
     return num_parameters, num_parameters_requiring_grad
 
 
-def normalized_cut_2d(edge_index: torch.Tensor, pos: torch.Tensor):
+def normalized_cut_2d(edge_index: torch.Tensor, pos: torch.Tensor) -> torch.Tensor:
     """
     Courtesy of
     https://github.com/pyg-team/pytorch_geometric/blob/master/examples/mnist_graclus.py
@@ -34,6 +34,10 @@ def normalized_cut_2d(edge_index: torch.Tensor, pos: torch.Tensor):
     return normalized_cut(edge_index, edge_attr, num_nodes=pos.size(0))
 
 
-def calculate_accuracy(outputs: torch.Tensor, targets: torch.Tensor):
-    pred = outputs.max(1)[1]
-    return pred.eq(targets).sum().item()
+def calculate_accuracy(outputs: torch.Tensor, targets: torch.Tensor) -> float:
+    """
+    calculates the accuracy between the argmax of the last dimension of outputs
+    and the targets
+    """
+    pred = outputs.argmax(-1)
+    return pred.view_as(targets).eq(targets).sum().item() / targets.numel()
