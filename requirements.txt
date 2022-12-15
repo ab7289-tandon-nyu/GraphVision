@@ -1,10 +1,8 @@
 torch
 torchvision
-torchaudio
 scikit-learn
 scipy
 matplotlib
-pandas
 jupyter
 matplotlib
 wandb
