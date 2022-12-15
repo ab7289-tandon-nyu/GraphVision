@@ -26,7 +26,7 @@ def test_graph_input():
     data = Data(
         x=torch.ones((10, 1)),
         edge_index=torch.ones((2, 15), dtype=torch.long),
-        edge_attt=torch.ones((15, 2)),
+        edge_attr=torch.ones((15, 2)),
         batch=torch.tensor([0]),
         y=torch.tensor([1]),
     )
