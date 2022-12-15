@@ -1,32 +1,34 @@
 import copy
-from typing import Tuple, Union
+from typing import Any, Tuple, Union
 
 import torch_geometric.datasets as datasets
 import torch_geometric.transforms as T
 from torch.utils.data import random_split
 from torch_geometric.data import Dataset
 from torch_geometric.loader import DataLoader
-from torch_geometric.transforms import base_transform
+from torchvision import datasets as vision_datasets
 
 _DATASET_NAMES = dict(
     MNIST_P="MNISTSuperpixels",
     MNIST="MNIST",
     CIFAR10="CIFAR10",
+    T_CIFAR10="torchvision_cifar10",
+    T_MNIST="torchvision_mnist",
 )
 
 
 def get_datasets(
     data_dir: str = "../data/",
     name: str = "MNISTSuperpixels",
-    pre_transforms: base_transform = None,
-    transforms: base_transform = None,
+    pre_transforms: Any = None,
+    transforms: Union[Any, Tuple[Any, Any]] = None,
     valid_ratio: float = 0.1,
 ) -> Tuple[Dataset, Dataset, Dataset]:
     """
     Returns a tuple of the train, validation, and test datasets of the specified
     data, with any transforms or pre-transforms applied.
     """
-    if name is _DATASET_NAMES["MNIST_P"]:
+    if name == _DATASET_NAMES["MNIST_P"]:
         train_dataset = datasets.MNISTSuperpixels(
             data_dir, train=True, pre_transform=pre_transforms, transform=transforms
         )
@@ -34,15 +36,12 @@ def get_datasets(
             data_dir, train=False, pre_transform=pre_transforms, transform=transforms
         )
 
-        train_len = int(len(train_dataset) * (1 - valid_ratio))
-        valid_len = int(len(train_dataset) - train_len)
-        train_dataset, valid_dataset = random_split(
-            train_dataset, [train_len, valid_len]
+        train_dataset, valid_dataset = calculate_split(
+            train_dataset, valid_ratio, transforms
         )
-        valid_dataset.dataset.transform = transforms
 
-        return train_dataset, copy.deepcopy(valid_dataset), test_dataset
-    elif name is _DATASET_NAMES["MNIST"] or name is _DATASET_NAMES["CIFAR10"]:
+        return train_dataset, valid_dataset, test_dataset
+    elif name == _DATASET_NAMES["MNIST"] or name is _DATASET_NAMES["CIFAR10"]:
         train_dataset = datasets.GNNBenchmarkDataset(
             data_dir,
             name,
@@ -64,6 +63,48 @@ def get_datasets(
             pre_transform=pre_transforms,
             transform=transforms,
         )
+        return train_dataset, valid_dataset, test_dataset
+    elif name == _DATASET_NAMES["T_MNIST"]:
+        train_dataset = vision_datasets.MNIST(
+            data_dir,
+            train=True,
+            download=True,
+            transform=transforms,
+        )
+        test_dataset = vision_datasets.MNIST(
+            data_dir,
+            train=False,
+            download=True,
+            transform=transforms,
+        )
+
+        train_dataset, valid_dataset = calculate_split(
+            train_dataset, valid_ratio, transforms
+        )
+
+        return train_dataset, valid_dataset, test_dataset
+    elif name == _DATASET_NAMES["T_CIFAR10"]:
+        if not transforms or not len(transforms) == 2:
+            raise ValueError("Torchvision datasets need train and test transforms")
+        train_transforms, test_transforms = transforms
+
+        train_dataset = vision_datasets.CIFAR10(
+            data_dir,
+            train=True,
+            transform=train_transforms,
+            download=True,
+        )
+        test_dataset = vision_datasets.CIFAR10(
+            data_dir,
+            train=False,
+            transform=test_transforms,
+            download=True,
+        )
+
+        train_dataset, valid_dataset = calculate_split(
+            train_dataset, valid_ratio, train_transforms
+        )
+
         return train_dataset, valid_dataset, test_dataset
     else:
         raise ValueError("Invalid Dataset name")
@@ -117,3 +158,14 @@ def get_dataloaders(
             test_dataset, batch_size=test_batch, shuffle=False, drop_last=drop_last
         ),
     )
+
+
+def calculate_split(dataset, valid_ratio, transform):
+    """
+    Calculates the Training set/Validation set split
+    """
+    train_len = int(len(dataset) * (1 - valid_ratio))
+    valid_len = int(len(dataset) - train_len)
+    train_dataset, valid_dataset = random_split(dataset, [train_len, valid_len])
+    valid_dataset.dataset.transform = transform
+    return train_dataset, copy.deepcopy(valid_dataset)
