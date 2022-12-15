@@ -36,6 +36,7 @@ def get_transforms_list(type: str = "cartesian"):
         ]
         return train_transform
     elif type is "cifar10-slic":
+        print("here")
         train_transform = [
             transforms.AutoAugmentPolicy(policy=autoaugment.AutoAugmentPolicy.CIFAR10),
             transforms.ToTensor(),
@@ -53,6 +54,7 @@ def get_transforms_list(type: str = "cartesian"):
             TG.NormalizeScale(),
             TG.NormalizeFeatures(),
         ]
+        print(f"train: {train_transform}\ntest: {test_transform}")
         return train_transform, test_transform
 
 
