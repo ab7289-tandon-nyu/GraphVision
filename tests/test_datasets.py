@@ -5,6 +5,7 @@ from torch.utils.data import Subset
 from torch_geometric.data import Dataset
 from torch_geometric.datasets import MNISTSuperpixels
 from torch_geometric.loader import DataLoader
+from torchvision.datasets import CIFAR10, MNIST
 
 from src.datasets import get_dataloaders, get_datasets
 
@@ -16,9 +17,11 @@ from src.datasets import get_dataloaders, get_datasets
         ("MNIST", (Dataset, Dataset, Dataset)),
         ("CIFAR10", (Dataset, Dataset, Dataset)),
         ("random", "error"),
+        ("torchvision_mnist", (Subset, Subset, MNIST)),
+        ("torchvision_cifar10", (Subset, Subset, CIFAR10)),
     ],
 )
-def test_dataset_download(name, return_value, tmp_path):
+def test_dataset_download(name, return_value, tmp_path, test_transforms):
     """
     Tests that the get_dataset function returns valid values
     """
@@ -29,7 +32,7 @@ def test_dataset_download(name, return_value, tmp_path):
             _, _, _ = get_datasets(path, name)
 
     else:
-        dataset = get_datasets(path, name)
+        dataset = get_datasets(path, name, transforms=test_transforms)
         assert isinstance(dataset, tuple)
         assert isinstance(dataset[0], return_value[0])
         assert isinstance(dataset[1], return_value[1])

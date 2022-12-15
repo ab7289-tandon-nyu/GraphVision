@@ -1,5 +1,6 @@
 import pytest
 import torch
+from torch_geometric import transforms
 from torch_geometric.data import Data
 from torch_geometric.datasets import MNISTSuperpixels
 
@@ -31,3 +32,11 @@ def test_graph_input():
         y=torch.tensor([1]),
     )
     return data
+
+
+@pytest.fixture
+def test_transforms():
+    return (
+        transforms.Compose(transforms.ToSparseTensor()),
+        transforms.Compose(transforms.ToSparseTensor()),
+    )
