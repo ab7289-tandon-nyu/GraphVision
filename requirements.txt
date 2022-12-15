@@ -8,9 +8,6 @@ matplotlib
 wandb
 torch-summary
 
-# PyG Dependencies
-torch-geometric
-
 # test-dependencies
 pytest
 pytest-cov
