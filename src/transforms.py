@@ -1,36 +1,59 @@
-import torch_geometric.transforms as T
+import torch_geometric.transforms as TG
+import torchvision.transforms as transforms
+from torchvision.transforms import autoaugment
 
 
 def get_transforms_list(type: str = "cartesian"):
     if type is "cartesian":
         return [
-            T.GCNNorm(),
-            T.Cartesian(cat=False),
-            T.NormalizeScale(),
-            T.NormalizeFeatures(),
+            TG.GCNNorm(),
+            TG.Cartesian(cat=False),
+            TG.NormalizeScale(),
+            TG.NormalizeFeatures(),
         ]
     elif type is "distance":
         return [
-            T.GCNNorm(),
-            T.Distance(cat=False),
-            T.NormalizeScale(),
-            T.NormalizeFeatures(),
+            TG.GCNNorm(),
+            TG.Distance(cat=False),
+            TG.NormalizeScale(),
+            TG.NormalizeFeatures(),
         ]
     elif type is "localcartesian":
         return [
-            T.GCNNorm(),
-            T.LocalCartesian(cat=False),
-            T.NormalizeScale(),
-            T.NormalizeFeatures(),
+            TG.GCNNorm(),
+            TG.LocalCartesian(cat=False),
+            TG.NormalizeScale(),
+            TG.NormalizeFeatures(),
         ]
-    elif type is "slic":
-        return [
-            T.ToSLIC(),
-            T.GCNNorm(),
-            T.Cartesian(cat=False),
-            T.NormalizeScale(),
-            T.NormalizeFeatures(),
+    elif type is "mnist-slic":
+        train_transform = [
+            transforms.ToTensor(),
+            TG.ToSLIC(),
+            TG.GCNNorm(),
+            TG.Cartesian(cat=False),
+            TG.NormalizeScale(),
+            TG.NormalizeFeatures(),
         ]
+        return train_transform
+    elif type is "cifar10-slic":
+        train_transform = [
+            transforms.AutoAugmentPolicy(policy=autoaugment.AutoAugmentPolicy.CIFAR10),
+            transforms.ToTensor(),
+            TG.ToSLIC(),
+            TG.GCNNorm(),
+            TG.Cartesian(cat=False),
+            TG.NormalizeScale(),
+            TG.NormalizeFeatures(),
+        ]
+        test_transform = [
+            transforms.ToTensor(),
+            TG.ToSLIC(),
+            TG.GCNNorm(),
+            TG.Cartesian(cat=False),
+            TG.NormalizeScale(),
+            TG.NormalizeFeatures(),
+        ]
+        return train_transform, test_transform
 
 
 def get_transforms(type: str = "cartesian"):
@@ -45,9 +68,13 @@ def get_transforms(type: str = "cartesian"):
     Default - GCNNorm, Cartesian, Normalize Scale and Features
     Distance - GCNNorm, Distance, Normalize Scale and Features
     Local Cartesian - GCNNorm, Local Cartesian, Normalize Scale and Features
-    SLIC - SLIC, GCNNorm, Cartesian, Normalize Scale and Features
+    mnist-slic - ToTensor, SLIC, GCNNorm, Cartesian, Normalize Scale and Features
+    cifar10-slic - AutoAugment, ToTensor, ToSLIC, Cartesion, Normalize and Scale features
 
     NOTE: SLIC can only be used with torchvision datasets, converts them to a graph
     """
     transforms_list = get_transforms_list(type)
-    return T.Compose(transforms_list)
+    if "slic" in type:
+        return TG.Compose(transforms_list[0]), TG.Compose(transforms_list[1])
+    else:
+        return TG.Compose(transforms_list)
