@@ -74,6 +74,7 @@ def get_transforms(type: str = "cartesian"):
     NOTE: SLIC can only be used with torchvision datasets, converts them to a graph
     """
     transforms_list = get_transforms_list(type)
+    print(f"Transforms_list : {len(transforms_list)} :\n{transforms_list}")
     if "slic" in type:
         return TG.Compose(transforms_list[0]), TG.Compose(transforms_list[1])
     else:
