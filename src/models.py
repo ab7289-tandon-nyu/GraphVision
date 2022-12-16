@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 import torch
 import torch.nn.functional as F
@@ -10,22 +10,29 @@ from src.utils import normalized_cut_2d
 
 
 def get_conv_layer(
-    conv_type: str, hidden_features: int, edge_dim: Optional[int] = None
+    conv_type: str, hidden_features: Union[int,Tuple[int,int]], edge_dim: Optional[int] = None
 ):
     """
     Creates a GCN layer with the specified convolution type
     """
+
+    in_features, out_features = None, None
+    if isinstance(hidden_features, Tuple):
+        in_features, out_features = hidden_features
+    else:
+        in_features, out_features = hidden_features, hidden_features
+
     if conv_type == "GEN":
         return gnn.GENConv(
-            hidden_features,
-            hidden_features,
+            in_features,
+            out_features,
             aggr="softmax",
             learn_t=True,
             edge_dim=edge_dim,
         )
     elif conv_type == "General":
         return gnn.GeneralConv(
-            hidden_features, hidden_features, in_edge_channels=edge_dim
+            in_features, out_features, in_edge_channels=edge_dim
         )
     elif conv_type == "GAT":
         # TODO
@@ -71,7 +78,7 @@ class DeeperGCN(nn.Module):
         self,
         input_features: int,
         output_features: int,
-        hidden_features: int,
+        hidden_features: Union[int, list[int]],
         conv_type: str = "GEN",
         act: str = "relu",
         norm: str = "batch",
@@ -86,18 +93,24 @@ class DeeperGCN(nn.Module):
         self.readout = readout
         self.use_cluster_pooling = use_cluster_pooling
         self.dropout = dropout
+        
+        if isinstance(hidden_features, list):
+            if len(hidden_features) != num_layers:
+                raise ValueError(f"hidden layers length of {len(hidden_features)} must match number of layers {num_layers}")
+        elif isinstance(hidden_features, int):
+            hidden_features = [hidden_features] * num_layers    
 
-        self.fc_in = nn.Linear(input_features, hidden_features)
-        self.fc_out = nn.Linear(hidden_features, output_features)
+        self.fc_in = nn.Linear(input_features, hidden_features[0])
+        self.fc_out = nn.Linear(hidden_features[-1], output_features)
         self.out_act = get_act_layer(act)
 
         self.layers = nn.ModuleList()
-        for _ in range(num_layers):
+        for i in range(num_layers):
             self.layers.append(
                 gnn.DeepGCNLayer(
-                    conv=get_conv_layer(conv_type, hidden_features, edge_dim=edge_dim),
+                    conv=get_conv_layer(conv_type, (hidden_features[i], hidden_features[i]), edge_dim=edge_dim),
                     act=get_act_layer(act),
-                    norm=get_norm_layer(norm, hidden_features),
+                    norm=get_norm_layer(norm, hidden_features[i]),
                     block="res+",
                     dropout=dropout,
                 )
