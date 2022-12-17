@@ -40,7 +40,7 @@ def get_transforms_list(type: str = "cartesian"):
             transforms.AutoAugment(policy=autoaugment.AutoAugmentPolicy.CIFAR10),
             transforms.ToTensor(),
             TG.ToSLIC(),
-            TG.GCNNorm(),
+            # TG.GCNNorm(),
             TG.Cartesian(cat=False),
             TG.NormalizeScale(),
             TG.NormalizeFeatures(),
@@ -48,7 +48,7 @@ def get_transforms_list(type: str = "cartesian"):
         test_transform = [
             transforms.ToTensor(),
             TG.ToSLIC(),
-            TG.GCNNorm(),
+            # TG.GCNNorm(),
             TG.Cartesian(cat=False),
             TG.NormalizeScale(),
             TG.NormalizeFeatures(),
