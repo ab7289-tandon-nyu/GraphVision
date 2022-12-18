@@ -39,16 +39,18 @@ def get_transforms_list(type: str = "cartesian"):
         train_transform = [
             transforms.AutoAugment(policy=autoaugment.AutoAugmentPolicy.CIFAR10),
             transforms.ToTensor(),
+            TG.KNNGraph(k = 8),
             TG.ToSLIC(),
-            # TG.GCNNorm(),
+            TG.GCNNorm(),
             TG.Cartesian(cat=False),
             TG.NormalizeScale(),
             TG.NormalizeFeatures(),
         ]
         test_transform = [
             transforms.ToTensor(),
+            TG.KNNGraph(k = 8),
             TG.ToSLIC(),
-            # TG.GCNNorm(),
+            TG.GCNNorm(),
             TG.Cartesian(cat=False),
             TG.NormalizeScale(),
             TG.NormalizeFeatures(),
