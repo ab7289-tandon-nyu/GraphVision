@@ -65,7 +65,6 @@ def get_norm_layer(norm_type: str, hidden_features: int):
     else:
         raise ValueError(f"Invalid normalization layer type: {norm_type}")
 
-class GAT
 
 class DeeperGCN(nn.Module):
     def __init__(
@@ -96,7 +95,8 @@ class DeeperGCN(nn.Module):
         for _ in range(num_layers):
             self.layers.append(
                 gnn.DeepGCNLayer(
-                    conv=get_conv_layer(conv_type, hidden_features, edge_dim=edge_dim),
+                    conv=get_conv_layer(
+                        conv_type, hidden_features, edge_dim=edge_dim),
                     act=get_act_layer(act),
                     norm=get_norm_layer(norm, hidden_features),
                     block="res+",
