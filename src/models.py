@@ -28,9 +28,7 @@ def get_conv_layer(
             hidden_features, hidden_features, in_edge_channels=edge_dim
         )
     elif conv_type == "GAT":
-        return gnn.GATConv(
-            in_channels=hidden_features, out_channels=hidden_features
-        )
+        return gnn.GATConv(in_channels=hidden_features, out_channels=hidden_features)
     # add other cases
     else:
         raise ValueError(f"Invalid conv layer type: {conv_type}")
@@ -95,8 +93,7 @@ class DeeperGCN(nn.Module):
         for _ in range(num_layers):
             self.layers.append(
                 gnn.DeepGCNLayer(
-                    conv=get_conv_layer(
-                        conv_type, hidden_features, edge_dim=edge_dim),
+                    conv=get_conv_layer(conv_type, hidden_features, edge_dim=edge_dim),
                     act=get_act_layer(act),
                     norm=get_norm_layer(norm, hidden_features),
                     block="res+",
