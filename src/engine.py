@@ -11,7 +11,7 @@ def train(
     epoch_loss = 0
     epoch_acc = 0
     for data in iter:
-        data = data.to(device)
+        data = data.to(device) if not isinstance(data, list) else data[0].to(device)
 
         optimizer.zero_grad()
 
@@ -34,7 +34,7 @@ def evaluate(model, iter, criterion, device) -> Tuple[float, float]:
     epoch_loss = 0
     epoch_acc = 0
     for data in iter:
-        data = data.to(device)
+        data = data.to(device) if not isinstance(data, list) else data[0].to(device)
 
         outputs = model(data)
         loss = criterion(outputs, data.y)
