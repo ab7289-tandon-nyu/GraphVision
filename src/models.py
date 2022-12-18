@@ -28,10 +28,10 @@ def get_conv_layer(
             hidden_features, hidden_features, in_edge_channels=edge_dim
         )
     elif conv_type == "GAT":
-        # TODO
-        raise NotImplementedError()
+        return gnn.GATConv(
+            in_channels=hidden_features, out_channels=hidden_features
+        )
     # add other cases
-
     else:
         raise ValueError(f"Invalid conv layer type: {conv_type}")
 
@@ -65,6 +65,7 @@ def get_norm_layer(norm_type: str, hidden_features: int):
     else:
         raise ValueError(f"Invalid normalization layer type: {norm_type}")
 
+class GAT
 
 class DeeperGCN(nn.Module):
     def __init__(
