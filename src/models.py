@@ -28,7 +28,9 @@ def get_conv_layer(
             hidden_features, hidden_features, in_edge_channels=edge_dim
         )
     elif conv_type == "GAT":
-        return gnn.GATConv(in_channels=hidden_features, out_channels=hidden_features)
+        return gnn.GATConv(
+            in_channels=hidden_features, out_channels=hidden_features, edge_dim=edge_dim
+        )
     # add other cases
     else:
         raise ValueError(f"Invalid conv layer type: {conv_type}")
