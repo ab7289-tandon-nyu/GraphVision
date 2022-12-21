@@ -2,6 +2,10 @@ import torch_geometric.transforms as T
 
 
 def get_transforms_list(type: str = "cartesian"):
+    """
+    returns a predefined list of transforms to be used with
+    the graph datasets
+    """
     if type is "cartesian":
         return [
             T.GCNNorm(),
