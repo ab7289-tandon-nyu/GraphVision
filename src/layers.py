@@ -3,6 +3,10 @@ import torch.nn.functional as F
 from torch_geometric.nn import MessagePassing
 from torch_geometric.utils import add_self_loops
 
+"""
+NOTE: We did not get around to testing models with this GCN.
+"""
+
 
 class SpatialGraphConv(MessagePassing):
     """
