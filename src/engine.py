@@ -1,11 +1,24 @@
 from typing import Any, Optional, Tuple
 
+import torch
+import torch.nn as nn
+from torch.optim import Optimizer
+from torch_geometric.loader import DataLoader
+
 from src.utils import calculate_accuracy
 
 
 def train(
-    model, iter, criterion, optimizer, device, scheduler: Optional[Any] = None
+    model: nn.Module,
+    iter: DataLoader,
+    criterion: nn.Module,
+    optimizer: Optimizer,
+    device: torch.DeviceObjType,
+    scheduler: Optional[Any] = None,
 ) -> Tuple[float, float]:
+    """
+    performs one epoch of training on the model, accumulating the loss and accuracy to be returned
+    """
     model.train()
 
     epoch_loss = 0
@@ -28,7 +41,16 @@ def train(
     return epoch_loss / len(iter), epoch_acc / len(iter)
 
 
-def evaluate(model, iter, criterion, device) -> Tuple[float, float]:
+def evaluate(
+    model: nn.Module,
+    iter: DataLoader,
+    criterion: nn.Module,
+    device: torch.DeviceObjType,
+) -> Tuple[float, float]:
+    """
+    evaluates the model over the specified Validation/Test DataLoader with the given criterion.
+    Loss and Accuracy are accumulated over the epoch to be returned.
+    """
     model.eval()
 
     epoch_loss = 0
