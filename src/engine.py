@@ -11,10 +11,13 @@ def train(
     epoch_loss = 0
     epoch_acc = 0
     for data in iter:
-        targets = data.y
+        targets = None
         if isinstance(data, list):
             data = data[0].to(device)
             targets = data[1].to(device)
+        else:
+            data = data.to(device)
+            targets = data.y
 
         optimizer.zero_grad()
 
@@ -37,10 +40,13 @@ def evaluate(model, iter, criterion, device) -> Tuple[float, float]:
     epoch_loss = 0
     epoch_acc = 0
     for data in iter:
-        targets = data.y
+        targets = None
         if isinstance(data, list):
             data = data[0].to(device)
             targets = data[1].to(device)
+        else:
+            data = data.to(device)
+            targets = data.y
 
         outputs = model(data)
         loss = criterion(outputs, targets)
