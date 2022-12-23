@@ -44,7 +44,7 @@ def get_transforms_list(type: str = "cartesian"):
             TG.GCNNorm(),
             TG.Cartesian(cat=False),
             TG.NormalizeScale(),
-            TG.NormalizeFeatures(),
+            TG.NormalizeFeatures(["x", "edge_attr", "edge_weight"]),
         ]
         test_transform = [
             transforms.ToTensor(),
@@ -53,7 +53,7 @@ def get_transforms_list(type: str = "cartesian"):
             TG.GCNNorm(),
             TG.Cartesian(cat=False),
             TG.NormalizeScale(),
-            TG.NormalizeFeatures(),
+            TG.NormalizeFeatures(["x", "edge_attr", "edge_weight"]),
         ]
         return train_transform, test_transform
 
