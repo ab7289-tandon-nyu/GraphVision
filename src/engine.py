@@ -11,12 +11,15 @@ def train(
     epoch_loss = 0
     epoch_acc = 0
     for data in iter:
-        data = data.to(device) if not isinstance(data, list) else data[0].to(device)
+        targets = data.y
+        if isinstance(data, list):
+            data = data[0].to(device)
+            targets = data[1].to(device)
 
         optimizer.zero_grad()
 
         outputs = model(data)
-        loss = criterion(outputs, data.y)
+        loss = criterion(outputs, targets)
         loss.backward()
 
         optimizer.step()
@@ -24,7 +27,7 @@ def train(
             scheduler.step()
 
         epoch_loss += loss.item()
-        epoch_acc += calculate_accuracy(outputs, data.y)
+        epoch_acc += calculate_accuracy(outputs, targets)
     return epoch_loss / len(iter), epoch_acc / len(iter)
 
 
@@ -34,11 +37,14 @@ def evaluate(model, iter, criterion, device) -> Tuple[float, float]:
     epoch_loss = 0
     epoch_acc = 0
     for data in iter:
-        data = data.to(device) if not isinstance(data, list) else data[0].to(device)
+        targets = data.y
+        if isinstance(data, list):
+            data = data[0].to(device)
+            targets = data[1].to(device)
 
         outputs = model(data)
-        loss = criterion(outputs, data.y)
+        loss = criterion(outputs, targets)
 
         epoch_loss += loss.item()
-        epoch_acc += calculate_accuracy(outputs, data.y)
+        epoch_acc += calculate_accuracy(outputs, targets)
     return epoch_loss / len(iter), epoch_acc / len(iter)
