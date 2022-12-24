@@ -19,7 +19,9 @@ def train(
             print(f"data[1]: {data[1]}")
             data = data[0].to(device)
             # print(data[1])
-            targets = torch.tensor(data[1]).to(device)
+            targets = data[1].float().to(device)
+            print(f"Data: {data}")
+            print(f"targets: {targets}")
         else:
             data = data.to(device)
             targets = data.y
