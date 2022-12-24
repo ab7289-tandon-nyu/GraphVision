@@ -1,5 +1,7 @@
 from typing import Any, Optional, Tuple
 
+import torch
+
 from src.utils import calculate_accuracy
 
 
@@ -14,7 +16,7 @@ def train(
         targets = None
         if isinstance(data, list):
             data = data[0].to(device)
-            targets = data[1].to(device)
+            targets = torch.LongTensor(data[1], device=device)
         else:
             data = data.to(device)
             targets = data.y
