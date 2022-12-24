@@ -16,6 +16,7 @@ def train(
         targets = None
         if isinstance(data, list):
             data = data[0].to(device)
+            print(data[1])
             targets = torch.tensor(data[1]).to(device)
         else:
             data = data.to(device)
