@@ -1,6 +1,6 @@
 from typing import Any, Optional, Tuple
 
-import torch
+from torch_geometric.data import Data
 
 from src.utils import calculate_accuracy
 
@@ -17,11 +17,12 @@ def train(
         if isinstance(data, list):
             print(f"data[0]: {data[0]}")
             print(f"data[1]: {data[1]}")
-            data = data[0].to(device)
+            data: Data = data[0]
             # print(data[1])
-            targets = data[1].float().to(device)
+            data.y = data[1]
+            data = data.to(device)
             print(f"Data: {data}")
-            print(f"targets: {targets}")
+            # print(f"targets: {targets}")
         else:
             data = data.to(device)
             targets = data.y
@@ -29,7 +30,7 @@ def train(
         optimizer.zero_grad()
 
         outputs = model(data)
-        loss = criterion(outputs, targets)
+        loss = criterion(outputs, data.y)
         loss.backward()
 
         optimizer.step()
@@ -37,7 +38,7 @@ def train(
             scheduler.step()
 
         epoch_loss += loss.item()
-        epoch_acc += calculate_accuracy(outputs, targets)
+        epoch_acc += calculate_accuracy(outputs, data.y)
     return epoch_loss / len(iter), epoch_acc / len(iter)
 
 
@@ -49,15 +50,16 @@ def evaluate(model, iter, criterion, device) -> Tuple[float, float]:
     for data in iter:
         targets = None
         if isinstance(data, list):
-            data = data[0].to(device)
-            targets = data[1].to(device)
+            data: Data = data[0]
+            data.y = data[1]
+            data = data.to(device)
         else:
             data = data.to(device)
-            targets = data.y
+            # targets = data.y
 
         outputs = model(data)
-        loss = criterion(outputs, targets)
+        loss = criterion(outputs, data.y)
 
         epoch_loss += loss.item()
-        epoch_acc += calculate_accuracy(outputs, targets)
+        epoch_acc += calculate_accuracy(outputs, data.y)
     return epoch_loss / len(iter), epoch_acc / len(iter)
