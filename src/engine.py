@@ -16,7 +16,7 @@ def train(
         targets = None
         if isinstance(data, list):
             data = data[0].to(device)
-            targets = torch.LongTensor(data[1], device=device)
+            targets = torch.LongTensor(data[1]).to(device)
         else:
             data = data.to(device)
             targets = data.y
