@@ -12,25 +12,28 @@ def train(
 
     epoch_loss = 0
     epoch_acc = 0
-    for data in iter:
-        targets = None
-        if isinstance(data, list):
-            print(f"data[0]: {data[0]}")
-            print(f"data[1]: {data[1]}")
-            data: Data = data[0]
-            # print(data[1])
-            data.y = data[1]
-            data = data.to(device)
-            print(f"Data: {data}")
-            # print(f"targets: {targets}")
-        else:
-            data = data.to(device)
-            targets = data.y
+    for data, target in iter:
+        data = data.to(device)
+        target = target.to(device)
+    # for data in iter:
+        # targets = None
+        # if isinstance(data, list):
+        #     print(f"data[0]: {data[0]}")
+        #     print(f"data[1]: {data[1]}")
+        #     data: Data = data[0]
+        #     # print(data[1])
+        #     data.y = data[1]
+        #     data = data.to(device)
+        #     print(f"Data: {data}")
+        #     # print(f"targets: {targets}")
+        # else:
+        #     data = data.to(device)
+        #     targets = data.y
 
         optimizer.zero_grad()
 
         outputs = model(data)
-        loss = criterion(outputs, data.y)
+        loss = criterion(outputs, target)
         loss.backward()
 
         optimizer.step()
@@ -38,7 +41,7 @@ def train(
             scheduler.step()
 
         epoch_loss += loss.item()
-        epoch_acc += calculate_accuracy(outputs, data.y)
+        epoch_acc += calculate_accuracy(outputs, target)
     return epoch_loss / len(iter), epoch_acc / len(iter)
 
 
@@ -47,19 +50,22 @@ def evaluate(model, iter, criterion, device) -> Tuple[float, float]:
 
     epoch_loss = 0
     epoch_acc = 0
-    for data in iter:
-        targets = None
-        if isinstance(data, list):
-            data: Data = data[0]
-            data.y = data[1]
-            data = data.to(device)
-        else:
-            data = data.to(device)
+    for data, target in iter:
+        data = data.to(device)
+        target = target.to(device)
+    # for data in iter:
+    #     targets = None
+    #     if isinstance(data, list):
+    #         data: Data = data[0]
+    #         data.y = data[1]
+    #         data = data.to(device)
+    #     else:
+    #         data = data.to(device)
             # targets = data.y
 
         outputs = model(data)
-        loss = criterion(outputs, data.y)
+        loss = criterion(outputs, target)
 
         epoch_loss += loss.item()
-        epoch_acc += calculate_accuracy(outputs, data.y)
+        epoch_acc += calculate_accuracy(outputs, target)
     return epoch_loss / len(iter), epoch_acc / len(iter)
